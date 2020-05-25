@@ -1,7 +1,7 @@
 
 #include "WiFiEsp.h"
 #include "SoftwareSerial.h"
-#include "ThingSpeak.h"
+#include "PubSubClient.h"
 
 #ifndef HAVE_HWSERIAL1
 //HardwareSerial pins for RFID readers
@@ -28,7 +28,8 @@ SoftwareSerial Ser14 = SoftwareSerial(51, 22);
 SoftwareSerial Ser15 = SoftwareSerial(52, 22);
 SoftwareSerial Ser16 = SoftwareSerial(53, 22);
 
-WiFiEspClient  client;
+WiFiEspClient client;
+PubSubClient mqttClient(client);
 
 //First Shift Register pins
 int dataFirstShiftRegister = 22;
@@ -65,8 +66,8 @@ const int CHECKSUM_SIZE = 2; // 2byte checksum
 uint8_t buffer[BUFFER_SIZE]; // used to store an incoming data frame
 int buffer_index = 0;
 
-unsigned long myChannelNumber = 0;
-const char * myWriteAPIKey = "1KCIJE0V56IGASY6";
+char* topic = "channels/889998/publish/1KCIJE0V56IGASY6";
+char* server = "mqtt.thingspeak.com";
 
 long row1;
 long row2;
@@ -91,7 +92,7 @@ void setup() {
     while (true);
   }
   Serial.println("WiFi shield exists.");
-  ThingSpeak.begin(client);
+  mqttClient.setServer(server, 1883);
 
   //Initiate RFID readers
   Ser1.begin(9600);
@@ -438,5 +439,5 @@ void loop() {
   turnOffAllSecondShiftRegister();
   clearSerial(Ser16);
 
-  updateThingspeakChannel();
+  publishData();
 }

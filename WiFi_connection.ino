@@ -1,6 +1,6 @@
 void connectToWifi(){
-  char network_name[] = "HUAWEI-84E6";
-  char password[] = "24827117"; 
+  char network_name[] = "MW40V_47BC";
+  char password[] = "04667337"; 
   if(WiFi.status() != WL_CONNECTED){
     Serial.print("Attempting to connect to wifi: ");
     while(WiFi.status() != WL_CONNECTED){
